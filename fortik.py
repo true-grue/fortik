@@ -110,7 +110,6 @@ source = """
 : star2 10 repeat star1 cr ;
 : star 10 repeat star2 ;
 star
-
 : fact1 drop 1 ;
 : fact2 dup 1 - fact * ;
 : fact dup 1 < ifelse fact1 fact2 ;
