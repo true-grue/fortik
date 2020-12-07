@@ -26,11 +26,12 @@ def parse(source):
 
 
 def define(words, name, code, pc):
-    start_pc = pc
-    while code[pc - 1] != (";", None):
+    compiled = []
+    while code[pc] != (";", None):
+        compiled.append(code[pc])
         pc += 1
-    words[name] = code[start_pc:pc]
-    return pc
+    words[name] = compiled
+    return pc + 1
 
 
 def execute(words, stack, code, pc=0):
