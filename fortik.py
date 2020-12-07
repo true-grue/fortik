@@ -66,15 +66,11 @@ def execute(words, stack, code, pc=0):
             else:
                 sys.exit("unknown word: " + v)
         elif t == "repeat":
-            n = stack.pop()
-            for _ in range(n):
+            for _ in range(stack.pop()):
                 execute(words, stack, words[v])
         elif t == "ifelse":
-            w1, w2 = v
-            if stack.pop():
-                execute(words, stack, words[w1])
-            else:
-                execute(words, stack, words[w2])
+            w = v[0] if stack.pop() else v[1]
+            execute(words, stack, words[w])
         elif t == "ret":
             break
 
