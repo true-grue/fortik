@@ -71,8 +71,6 @@ def execute(words, stack, code, pc=0):
         elif t == "ifelse":
             w = v[0] if stack.pop() else v[1]
             execute(words, stack, words[w])
-        elif t == "ret":
-            break
 
 
 def repl():
