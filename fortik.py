@@ -12,7 +12,7 @@ def parse(source):
             code.append(("num", int(word)))
         elif word in "+-*/<>=":
             code.append(("op", word))
-        elif word[0] == ":":
+        elif word == ":":
             code.append((":", tokens.pop(0)))
         elif word == ";":
             code.append((";", None))
