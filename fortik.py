@@ -76,7 +76,6 @@ def execute(words, stack, code, pc=0):
                 execute(words, stack, words[w2])
         elif t == "ret":
             break
-    return pc
 
 
 def repl():
