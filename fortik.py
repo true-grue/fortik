@@ -3,7 +3,7 @@
 import sys
 
 
-def parse(tokens):
+def parse(words, tokens):
     code = []
     while tokens:
         word = tokens.pop(0)
@@ -14,7 +14,7 @@ def parse(tokens):
             while tokens[0] != ";":
                 defined.append(tokens.pop(0))
             tokens.pop(0)
-            code.append((":", (name, parse(defined))))
+            words[name] = parse(words, defined)
         elif word == "repeat":
             code.append(("repeat", tokens.pop(0)))
         elif word == "ifelse":
@@ -37,8 +37,6 @@ def execute(words, stack, code, pc=0):
                 PRIMS[v](words, stack)
             else:
                 sys.exit("unknown word: " + v)
-        elif t == ":":
-            words[v[0]] = v[1]
         elif t == "repeat":
             for _ in range(stack.pop()):
                 execute(words, stack, words[v])
@@ -85,7 +83,7 @@ PRIMS = {
 def repl():
     words, stack = {}, []
     while True:
-        execute(words, stack, parse(input("> ").split()))
+        execute(words, stack, parse(words, input("> ").split()))
 
 
 source = """
@@ -100,5 +98,5 @@ star
 5 fact .
 """
 
-execute({}, [], parse(source.split()))
+words = {}; execute(words, [], parse(words, source.split()))
 repl()
