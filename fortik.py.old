@@ -3,19 +3,17 @@
 import sys
 
 
-def parse(tokens):
+def parse(source):
     code = []
+    tokens = source.split()
     while tokens:
         word = tokens.pop(0)
         if word.isdigit():
             code.append(("num", int(word)))
         elif word == ":":
-            name = tokens.pop(0)
-            defined = []
-            while tokens[0] != ";":
-                defined.append(tokens.pop(0))
-            tokens.pop(0)
-            code.append((":", (name, parse(defined))))
+            code.append((":", tokens.pop(0)))
+        elif word == ";":
+            code.append((";", None))
         elif word == "repeat":
             code.append(("repeat", tokens.pop(0)))
         elif word == "ifelse":
@@ -23,6 +21,15 @@ def parse(tokens):
         else:
             code.append(("call", word))
     return code
+
+
+def define(words, name, code, pc):
+    compiled = []
+    while code[pc] != (";", None):
+        compiled.append(code[pc])
+        pc += 1
+    words[name] = compiled
+    return pc + 1
 
 
 def execute(words, stack, code, pc=0):
@@ -39,7 +46,7 @@ def execute(words, stack, code, pc=0):
             else:
                 sys.exit("unknown word: " + v)
         elif t == ":":
-            words[v[0]] = v[1]
+            pc = define(words, v, code, pc)
         elif t == "repeat":
             for _ in range(stack.pop()):
                 execute(words, stack, words[v])
@@ -87,7 +94,7 @@ PRIMS = {
 def repl():
     words, stack = {}, []
     while True:
-        execute(words, stack, parse(input("> ").split()))
+        execute(words, stack, parse(input("> ")))
 
 
 source = """
@@ -102,5 +109,5 @@ star
 5 fact .
 """
 
-execute({}, [], parse(source.split()))
+execute({}, [], parse(source))
 repl()
