@@ -24,10 +24,8 @@ def parse(words, tokens):
     return code
 
 
-def execute(words, stack, code, pc=0):
-    while pc < len(code):
-        t, v = code[pc]
-        pc += 1
+def execute(words, stack, code):
+    for t, v in code:
         if t == "num":
             stack.append(v)
         elif t == "call":
@@ -86,7 +84,8 @@ def repl():
         execute(words, stack, parse(words, input("> ").split()))
 
 
-source = """: cr 10 emit ;
+source = """
+: cr 10 emit ;
 : star 42 emit ;
 : star-line dup repeat star cr ;
 : star-rect repeat star-line drop ;
@@ -96,5 +95,6 @@ source = """: cr 10 emit ;
 : fact dup 1 < ifelse fact1 fact2 ;
 5 fact ."""
 
-words = {}; execute(words, [], parse(words, source.split()))
+words = {}
+execute(words, [], parse(words, source.split()))
 repl()
