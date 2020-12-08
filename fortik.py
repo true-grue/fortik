@@ -10,8 +10,7 @@ def parse(tokens):
         if word.isdigit():
             code.append(("num", int(word)))
         elif word == ":":
-            name = tokens.pop(0)
-            defined = []
+            name, defined = tokens.pop(0), []
             while tokens[0] != ";":
                 defined.append(tokens.pop(0))
             tokens.pop(0)
@@ -44,8 +43,7 @@ def execute(words, stack, code, pc=0):
             for _ in range(stack.pop()):
                 execute(words, stack, words[v])
         elif t == "ifelse":
-            w = v[0] if stack.pop() else v[1]
-            execute(words, stack, words[w])
+            execute(words, stack, words[v[0] if stack.pop() else v[1]])
 
 
 def binop(func):
