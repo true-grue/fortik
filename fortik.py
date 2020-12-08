@@ -88,10 +88,10 @@ def repl():
 
 source = """
 : cr 10 emit ;
-: star1 42 emit ;
-: star2 10 repeat star1 cr ;
-: star 10 repeat star2 ;
-star
+: star 42 emit ;
+: star-line dup repeat star cr ;
+: star-rect repeat star-line drop ;
+4 8 star-rect
 : fact1 drop 1 ;
 : fact2 dup 1 - fact * ;
 : fact dup 1 < ifelse fact1 fact2 ;
