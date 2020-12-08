@@ -86,8 +86,7 @@ def repl():
         execute(words, stack, parse(words, input("> ").split()))
 
 
-source = """
-: cr 10 emit ;
+source = """: cr 10 emit ;
 : star 42 emit ;
 : star-line dup repeat star cr ;
 : star-rect repeat star-line drop ;
@@ -95,8 +94,7 @@ source = """
 : fact1 drop 1 ;
 : fact2 dup 1 - fact * ;
 : fact dup 1 < ifelse fact1 fact2 ;
-5 fact .
-"""
+5 fact ."""
 
 words = {}; execute(words, [], parse(words, source.split()))
 repl()
