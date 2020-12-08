@@ -10,8 +10,6 @@ def parse(source):
         word = tokens.pop(0)
         if word.isdigit():
             code.append(("num", int(word)))
-        elif word in "+-*/<>=":
-            code.append(("op", word))
         elif word == ":":
             code.append((":", tokens.pop(0)))
         elif word == ";":
@@ -40,24 +38,6 @@ def execute(words, stack, code, pc=0):
         pc += 1
         if t == "num":
             stack.append(v)
-        elif t == "op":
-            b, a = stack.pop(), stack.pop()
-            if v == "+":
-                stack.append(a + b)
-            elif v == "-":
-                stack.append(a - b)
-            elif v == "*":
-                stack.append(a * b)
-            elif v == "/":
-                stack.append(a // b)
-            elif v == "<":
-                stack.append(int(a < b))
-            elif v == ">":
-                stack.append(int(a > b))
-            elif v == "=":
-                stack.append(int(a == b))
-        elif t == ":":
-            pc = define(words, v, code, pc)
         elif t == "call":
             if v in words:
                 execute(words, stack, words[v])
@@ -65,6 +45,8 @@ def execute(words, stack, code, pc=0):
                 PRIMS[v](words, stack)
             else:
                 sys.exit("unknown word: " + v)
+        elif t == ":":
+            pc = define(words, v, code, pc)
         elif t == "repeat":
             for _ in range(stack.pop()):
                 execute(words, stack, words[v])
@@ -73,14 +55,11 @@ def execute(words, stack, code, pc=0):
             execute(words, stack, words[w])
 
 
-def repl():
-    words, stack = {}, []
-    while True:
-        execute(words, stack, parse(input("> ")))
-
-
-def dot(words, stack):
-    print(stack.pop())
+def binop(func):
+    def word(words, stack):
+        tos = stack.pop()
+        stack.append(func(stack.pop(), tos))
+    return word
 
 
 def dup(words, stack):
@@ -91,16 +70,32 @@ def drop(words, stack):
     stack.pop()
 
 
+def dot(words, stack):
+    print(stack.pop())
+
+
 def emit(words, stack):
     print(chr(stack.pop()), end="")
 
 
 PRIMS = {
+    "+": binop(lambda a, b: a + b),
+    "-": binop(lambda a, b: a - b),
+    "*": binop(lambda a, b: a * b),
+    "/": binop(lambda a, b: a // b),
+    "<": binop(lambda a, b: int(a < b)),
     "dup": dup,
     "drop": drop,
     ".": dot,
     "emit": emit
 }
+
+
+def repl():
+    words, stack = {}, []
+    while True:
+        execute(words, stack, parse(input("> ")))
+
 
 source = """
 : cr 10 emit ;

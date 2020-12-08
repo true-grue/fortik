@@ -1,2 +1,2 @@
 # fortik
-Tiny Forth implementation in Python
+Tiny Forth-like language implementation in Python
