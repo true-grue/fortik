@@ -78,8 +78,7 @@ PRIMS = {
 }
 
 
-def repl():
-    words, stack = {}, []
+def repl(words, stack):
     while True:
         execute(words, stack, parse(words, input("> ").split()))
 
@@ -95,6 +94,6 @@ source = """
 : fact dup 1 < ifelse fact1 fact2 ;
 5 fact ."""
 
-words = {}
-execute(words, [], parse(words, source.split()))
-repl()
+words, stack = {}, []
+execute(words, stack, parse(words, source.split()))
+repl(words, stack)
