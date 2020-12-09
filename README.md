@@ -1,4 +1,6 @@
 # fortik
 
 Tiny Forth-like language for teaching purposes.
-Try to implement it in your favorite language!
+
+1. Extend it!
+2. Rewrite it in your favorite language!
