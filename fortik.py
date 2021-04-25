@@ -20,10 +20,10 @@ def parse(words, tokens):
         elif word == ':':
             compile_colon(words, tokens)
         elif word == 'repeat':
-            code += [('code', tokens.pop(0)), ('call', 'repeat')]
+            code += [('name', tokens.pop(0)), ('call', 'repeat')]
         elif word == 'ifelse':
-            code += [('code', tokens.pop(0)),
-                     ('code', tokens.pop(0)), ('call', 'ifelse')]
+            code += [('name', tokens.pop(0)),
+                     ('name', tokens.pop(0)), ('call', 'ifelse')]
         else:
             code.append(('call', word))
     return code
@@ -31,7 +31,7 @@ def parse(words, tokens):
 
 def execute(words, stack, code):
     for t, v in code:
-        if t in ('int', 'code'):
+        if t in ('int', 'name'):
             stack.append(v)
         elif t == 'call':
             if v in words:
@@ -50,14 +50,14 @@ def binop(func):
 
 
 def repeat(words, stack):
-    code = stack.pop()
+    name = stack.pop()
     for _ in range(stack.pop()):
-        execute(words, stack, words[code])
+        execute(words, stack, words[name])
 
 
 def ifelse(words, stack):
-    code2, code1 = stack.pop(), stack.pop()
-    execute(words, stack, words[code1 if stack.pop() else code2])
+    name2, name1 = stack.pop(), stack.pop()
+    execute(words, stack, words[name1 if stack.pop() else name2])
 
 
 def dup(words, stack):
