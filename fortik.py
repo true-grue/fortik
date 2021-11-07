@@ -65,9 +65,9 @@ def repl(words, stack):
 
 
 source = '''
-[
-  dup 2 < [ drop 1 ] [ dup 1 - fact * ] ifelse
-] is fact
+[ dup * ] is square
+[ dup 2 < [ drop 1 ] [ dup 1 - fact * ] ifelse ] is fact
+4 square .
 5 fact .
 '''
 
