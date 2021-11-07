@@ -67,8 +67,11 @@ def repl(words, stack):
 source = '''
 [ dup * ] is square
 [ dup 2 < [ drop 1 ] [ dup 1 - fact * ] ifelse ] is fact
+[ dup [ 1 - odd ] [ drop 1 ] ifelse ] is even
+[ dup [ 1 - even ] [ drop 0 ] ifelse ] is odd
 4 square .
 5 fact .
+42 dup even . odd .
 '''
 
 words, stack = {}, []
