@@ -10,8 +10,8 @@ def parse(words, tokens):
             case ']':
                 code = ast.pop()
                 ast[-1].append(('push', code))
-            case 'is':
-                op = 'is'
+            case 'is' | 'to':
+                op = token
             case num if num.isdigit():
                 ast[-1].append(('push', int(num)))
             case _:
@@ -25,6 +25,8 @@ def execute(words, stack, ast):
         match node:
             case ('is', name):
                 words[name] = stack.pop()
+            case ('to', name):
+                words[name] = [('push', stack.pop())]
             case ('push', value):
                 stack.append(value)
             case ('call', name):
@@ -67,13 +69,12 @@ def repl(words, stack):
 
 
 source = '''
-[ dup * ] is square
-[ dup 2 < [ drop 1 ] [ dup 1 - fact * ] ifelse ] is fact
+[ dup 2 < [ drop 1 ] [ dup 1 - fact * ] ifelse ] is fact  5 fact .
 [ dup [ 1 - odd ] [ drop 1 ] ifelse ] is even
-[ dup [ 1 - even ] [ drop 0 ] ifelse ] is odd
-4 square .
-5 fact .
-42 dup even . odd .
+[ dup [ 1 - even ] [ drop 0 ] ifelse ] is odd  42 dup even . odd .
+[ to b to a  b a ] is swap
+[ 0 swap - ] is neg
+[ to a to b to c  b b * 4 a c * * - ] is D  5 neg 4 neg 1 D .
 '''
 
 words, stack = {}, []
