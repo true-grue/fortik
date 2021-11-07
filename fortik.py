@@ -2,8 +2,7 @@
 
 
 def parse(words, tokens):
-    ast = [[]]
-    op = 'call'
+    ast, op = [[]], 'call'
     for token in tokens:
         match token:
             case '[':
