@@ -5,7 +5,7 @@ def parse(words, tokens):
     ast = [[]]
     define = False
     for token in tokens:
-        match token:       
+        match token:
             case '[':
                 ast.append([])
             case ']':
@@ -18,7 +18,6 @@ def parse(words, tokens):
             case _:
                 ast[-1].append(('is' if define else 'call', token))
                 define = False
-               
     return ast[0]
 
 
