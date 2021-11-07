@@ -2,36 +2,40 @@
 
 
 def parse(words, tokens):
-    ast, new = [[]], False
+    ast = [[]]
+    define = False
     for token in tokens:
-        if new:
-            words[token] = ast[-1].pop()[1]
-            new = False
-        elif token == '[':
-            ast.append([])
-        elif token == ']':
-            quote = ast.pop()
-            ast[-1].append(('push', quote))
-        elif token == 'is':
-            new = True
-        elif token.isdigit():
-            ast[-1].append(('push', int(token)))
-        else:
-            ast[-1].append(('call', token))
+        match token:       
+            case '[':
+                ast.append([])
+            case ']':
+                code = ast.pop()
+                ast[-1].append(('push', code))
+            case 'is':
+                define = True
+            case num if num.isdigit():
+                ast[-1].append(('push', int(num)))
+            case _:
+                ast[-1].append(('is' if define else 'call', token))
+                define = False
+               
     return ast[0]
 
 
 def execute(words, stack, ast):
-    for op, val in ast:
-        if op == 'push':
-            stack.append(val)
-        elif op == 'call':
-            if val in words:
-                execute(words, stack, words[val])
-            elif val in PRIMS:
-                PRIMS[val](words, stack)
-            else:
-                sys.exit('unknown word: ' + val)
+    for node in ast:
+        match node:
+            case ('is', name):
+                words[name] = stack.pop()
+            case ('push', value):
+                stack.append(value)
+            case ('call', name):
+                if name in words:
+                    execute(words, stack, words[name])
+                elif name in PRIMS:
+                    PRIMS[name](words, stack)
+                else:
+                    sys.exit('unknown word: ' + name)
 
 
 def binop(func):
