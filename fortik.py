@@ -74,7 +74,7 @@ source = '''
 [ dup [ 1 - odd ] [ drop 1 ] ifelse ] is even
 [ dup [ 1 - even ] [ drop 0 ] ifelse ] is odd  42 dup even . odd .
 [ 0 swap - ] is neg
-[ to a to b to c  b b * 4 a c * * - ] is D  5 neg 4 neg 1 D .
+[ to c to b to a  b b * 4 a c * * - ] is D  5 neg 4 neg 1 D .
 '''
 
 words, stack = {}, []
