@@ -3,7 +3,7 @@
 
 def parse(words, tokens):
     ast = [[]]
-    define = False
+    op = 'call'
     for token in tokens:
         match token:
             case '[':
@@ -12,12 +12,12 @@ def parse(words, tokens):
                 code = ast.pop()
                 ast[-1].append(('push', code))
             case 'is':
-                define = True
+                op = 'is'
             case num if num.isdigit():
                 ast[-1].append(('push', int(num)))
             case _:
-                ast[-1].append(('is' if define else 'call', token))
-                define = False
+                ast[-1].append((op, token))
+                op = 'call'
     return ast[0]
 
 
