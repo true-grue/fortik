@@ -56,8 +56,6 @@ PRIMS = {
     '*': binop(lambda a, b: a * b),
     '/': binop(lambda a, b: a // b),
     '<': binop(lambda a, b: int(a < b)),
-    'dup': lambda words, stack: stack.append(stack[-1]),
-    'drop': lambda words, stack: stack.pop(),
     '.': lambda words, stack: print(stack.pop()),
     'ifelse': ifelse
 }
@@ -69,10 +67,12 @@ def repl(words, stack):
 
 
 source = '''
+[ to a  a a ] is dup
+[ to a ] is drop
+[ to b to a  b a ] is swap
 [ dup 2 < [ drop 1 ] [ dup 1 - fact * ] ifelse ] is fact  5 fact .
 [ dup [ 1 - odd ] [ drop 1 ] ifelse ] is even
 [ dup [ 1 - even ] [ drop 0 ] ifelse ] is odd  42 dup even . odd .
-[ to b to a  b a ] is swap
 [ 0 swap - ] is neg
 [ to a to b to c  b b * 4 a c * * - ] is D  5 neg 4 neg 1 D .
 '''
