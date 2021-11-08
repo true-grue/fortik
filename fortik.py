@@ -1,7 +1,7 @@
 ﻿import sys
 
 
-def parse(words, tokens):
+def parse(tokens):
     ast, op = [[]], 'call'
     for token in tokens:
         match token:
@@ -21,6 +21,7 @@ def parse(words, tokens):
 
 
 def execute(words, stack, ast):
+    words = dict(words)
     for node in ast:
         match node:
             case ('is', name):
@@ -36,6 +37,7 @@ def execute(words, stack, ast):
                     PRIMS[name](words, stack)
                 else:
                     sys.exit('unknown word: ' + name)
+    return words
 
 
 def binop(func):
@@ -50,6 +52,10 @@ def ifelse(words, stack):
     execute(words, stack, t_ast if stack.pop() else f_ast)
 
 
+def words(words, stack):
+    print(list(words.keys()))
+
+
 PRIMS = {
     '+': binop(lambda a, b: a + b),
     '-': binop(lambda a, b: a - b),
@@ -57,16 +63,17 @@ PRIMS = {
     '/': binop(lambda a, b: a // b),
     '<': binop(lambda a, b: int(a < b)),
     '.': lambda words, stack: print(stack.pop()),
-    'ifelse': ifelse
+    'ifelse': ifelse,
+    'words': words
 }
 
 
 def repl(words, stack):
     while True:
-        execute(words, stack, parse(words, input('> ').split()))
+        execute(words, stack, parse(input('> ').split()))
 
 
-source = '''
+tokens = '''
 [ to a  a a ] is dup
 [ to a ] is drop
 [ to b to a  b a ] is swap
@@ -75,8 +82,6 @@ source = '''
 [ dup [ 1 - even ] [ drop 0 ] ifelse ] is odd  42 dup even . odd .
 [ 0 swap - ] is neg
 [ to c to b to a  b b * 4 a c * * - ] is D  5 neg 4 neg 1 D .
-'''
+'''.split()
 
-words, stack = {}, []
-execute(words, stack, parse(words, source.split()))
-repl(words, stack)
+repl(execute({}, [], parse(tokens)), [])
