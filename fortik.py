@@ -21,7 +21,7 @@ def parse(tokens):
 
 
 def execute(words, stack, ast):
-    words = dict(words)
+    words = words.copy()
     for node in ast:
         match node:
             case ('is', name):
