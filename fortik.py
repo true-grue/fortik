@@ -72,11 +72,11 @@ tokens = '''
 [ to a  a a ] is dup
 [ to a ] is drop
 [ to b to a  b a ] is swap
-[ dup 2 < [ drop 1 ] [ dup 1 - fact * ] ifelse ] is fact  5 fact .
-[ dup [ 1 - odd ] [ drop 1 ] ifelse ] is even
-[ dup [ 1 - even ] [ drop 0 ] ifelse ] is odd  42 dup even . odd .
 [ 0 swap - ] is neg
 [ to c to b to a  b b * 4 a c * * - ] is D  5 neg 4 neg 1 D .
+[ to n  n 2 < [ 1 ] [ n n 1 - fact * ] ifelse ] is fact  5 fact .
+[ to n  n [ n 1 - odd ] [ 1 ] ifelse ] is even
+[ to n  n [ n 1 - even ] [ 0 ] ifelse ] is odd  42 dup even . odd .
 '''.split()
 
 repl(execute({}, [], parse(tokens)), [])
