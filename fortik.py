@@ -65,7 +65,7 @@ PRIMS = {
 
 def repl(words, stack):
     while True:
-        execute(words, stack, parse(input('> ').split()))
+        words = execute(words, stack, parse(input('> ').split()))
 
 
 tokens = '''
