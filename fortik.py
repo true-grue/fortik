@@ -52,10 +52,6 @@ def ifelse(words, stack):
     execute(words, stack, t_ast if stack.pop() else f_ast)
 
 
-def words(words, stack):
-    print(list(words.keys()))
-
-
 PRIMS = {
     '+': binop(lambda a, b: a + b),
     '-': binop(lambda a, b: a - b),
@@ -63,8 +59,7 @@ PRIMS = {
     '/': binop(lambda a, b: a // b),
     '<': binop(lambda a, b: int(a < b)),
     '.': lambda words, stack: print(stack.pop()),
-    'ifelse': ifelse,
-    'words': words
+    'ifelse': ifelse
 }
 
 
