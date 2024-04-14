@@ -1,28 +1,29 @@
-﻿import sys
+﻿import operator
 
 
 def parse(tokens):
-    ast, op = [[]], 'call'
+    stack = [[]]
+    op = 'call'
     for token in tokens:
         match token:
             case '[':
-                ast.append([])
+                stack.append([])
             case ']':
-                code = ast.pop()
-                ast[-1].append(('push', code))
+                code = stack.pop()
+                stack[-1].append(('push', code))
             case 'is' | 'to':
                 op = token
             case num if num.isdigit():
-                ast[-1].append(('push', int(num)))
+                stack[-1].append(('push', int(num)))
             case _:
-                ast[-1].append((op, token))
+                stack[-1].append((op, token))
                 op = 'call'
-    return ast[0]
+    return stack[0]
 
 
-def execute(words, stack, ast):
+def execute(words, stack, tree):
     words = words.copy()
-    for node in ast:
+    for node in tree:
         match node:
             case ('is', name):
                 words[name] = stack.pop()
@@ -30,13 +31,12 @@ def execute(words, stack, ast):
                 words[name] = [('push', stack.pop())]
             case ('push', value):
                 stack.append(value)
-            case ('call', name):
-                if name in words:
-                    execute(words, stack, words[name])
-                elif name in PRIMS:
-                    PRIMS[name](words, stack)
-                else:
-                    sys.exit('unknown word: ' + name)
+            case ('call', name) if name in words:
+                execute(words, stack, words[name])
+            case ('call', name) if name in LIB:
+                LIB[name](words, stack)
+            case _:
+                raise SystemExit(f'unknown word: {name}')
     return words
 
 
@@ -48,17 +48,17 @@ def binop(func):
 
 
 def ifelse(words, stack):
-    f_ast, t_ast = stack.pop(), stack.pop()
-    execute(words, stack, t_ast if stack.pop() else f_ast)
+    f_tree, t_tree = stack.pop(), stack.pop()
+    execute(words, stack, t_tree if stack.pop() else f_tree)
 
 
-PRIMS = {
-    '+': binop(lambda a, b: a + b),
-    '-': binop(lambda a, b: a - b),
-    '*': binop(lambda a, b: a * b),
-    '/': binop(lambda a, b: a // b),
-    '<': binop(lambda a, b: int(a < b)),
-    '.': lambda words, stack: print(stack.pop()),
+LIB = {
+    '+': binop(operator.add),
+    '-': binop(operator.sub),
+    '*': binop(operator.mul),
+    '/': binop(operator.floordiv),
+    '<': binop(operator.lt),
+    '.': lambda _, stack: print(stack.pop()),
     'ifelse': ifelse
 }
 
@@ -85,7 +85,6 @@ tokens = '''
 [ to n  n [ n 1 - even ] [ 0 ] ifelse ] is odd
 
 42 dup even . odd .
-
 '''.split()
 
 repl(execute({}, [], parse(tokens)), [])
