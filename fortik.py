@@ -36,7 +36,7 @@ def execute(words, stack, tree):
             case ('call', name) if name in LIB:
                 LIB[name](words, stack)
             case _:
-                raise SystemExit(f'unknown word: {name}')
+                raise SystemExit(f'unknown word: {node}')
     return words
 
 
